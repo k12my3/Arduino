@@ -1,0 +1,76 @@
+receiver exp 1--------------------------------------------------
+
+
+
+
+
+#include <SoftwareSerial.h>
+SoftwareSerial BTSerial (2 , 3) ; // RX | TX
+char c = ' ';
+int lm =10; // Left motor
+int lmr =9;
+int rm =8; // Right motor
+int rmr =7;
+
+void setup () 
+{
+  Serial . begin (9600) ;
+  Serial . println ("\nArduino with HC -05 is ready to recieve ");
+  BTSerial . begin (38400) ;
+  Serial . print (" BTserial started at 38400 ");
+  pinMode ( LED_BUILTIN , OUTPUT ) ;
+  pinMode (lm , OUTPUT ) ;
+  pinMode ( lmr , OUTPUT );
+  pinMode (rm , OUTPUT ) ;
+  pinMode ( rmr , OUTPUT );
+ }
+
+void loop () 
+{
+  // Keep reading from HC -06 and send to Arduino Serial Monitor
+  if ( BTSerial . available () )
+  {
+  c = BTSerial . read () ;
+  Serial . println (c );
+  switch ( c)
+  {
+  case 'F':     // Forward Direction
+             Serial.print("Forward Direction");
+             digitalWrite (lm , HIGH );
+             digitalWrite ( lmr , LOW );
+             digitalWrite (rm , HIGH );
+             digitalWrite ( rmr , LOW );
+             break ;
+  case 'B':       // Backward Direction
+             digitalWrite (lm , LOW);
+             digitalWrite ( lmr , HIGH );
+             digitalWrite (rm , LOW );
+             digitalWrite ( rmr , HIGH );
+              break ;
+  case 'L':      // Left turn
+             digitalWrite (lm , LOW );
+             digitalWrite ( lmr , LOW );
+             digitalWrite (rm , HIGH );
+             digitalWrite ( rmr , LOW );
+             break ;
+  case 'R':       // Right turn
+             digitalWrite (lm , HIGH );
+             digitalWrite ( lmr , LOW );
+             digitalWrite (rm , LOW );
+             digitalWrite ( rmr , LOW );
+             break ;
+  case 'S':      //Stop
+             digitalWrite (lm , LOW );
+             digitalWrite ( lmr , LOW );
+             digitalWrite (rm , LOW );
+             digitalWrite ( rmr , LOW );
+              break ;
+  default :
+              digitalWrite (lm , LOW );
+              digitalWrite ( lmr , LOW );
+              digitalWrite (rm , LOW );
+              digitalWrite ( rmr , LOW );
+              break ;
+   }
+           }
+ }

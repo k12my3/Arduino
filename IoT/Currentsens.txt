@@ -1,0 +1,38 @@
+current sensor
+
+
+const int sensorIn = ; // define the ADC GPIO pin number
+2 const double NoLoadVoltage = ;// use appropriate no -load - voltage
+for ACS712
+3 const int mVperAmp = ; // use appropriate mV/A Hint : read
+Introduction section
+4 const double adc_res = ; // define ADC resolution Hint : read
+Introduction section
+5 const loadSupplyVoltage = ; // define supply voltage of the load
+6 double Voltage = 0;
+7 double Volts = 0;
+8 double Amps = 0;
+9
+10 void setup () {
+11 pinMode ( sensorIn , INPUT ) ;
+12 Serial . begin (115200) ;
+13 delay (10) ;
+14 Serial . println (F(" Init .... "));
+
+}
+16
+17 void loop () {
+18 int result = analogRead ( sensorIn );
+19 Voltage = result * adc_res ;
+20 Serial . print (" Voltage : ");
+21 Serial . println ( Voltage );
+22 Volts = ( Voltage - NoLoadVoltage );
+23 Amps = ( Volts * 1000) / mVperAmp ;
+24 float Wattage = (5* Amps ) ;
+25 Serial . print ( Amps );
+26 Serial . println (" Amps ");
+27 Serial . print ( Wattage ) ;
+28 Serial . println (" Watt ");
+29 delay (5000) ;
+30 }
+

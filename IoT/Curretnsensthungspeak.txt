@@ -1,0 +1,81 @@
+thingspeak - current sensor
+
+
+#include <WiFi.h>
+#include "ThingSpeak.h" // always include thingspeak header file after other header files and custom macros
+
+const char* ssid = "Maximus";   // your network SSID (name) 
+const char* password = "lmao9876";   // your network password
+
+WiFiClient  client;
+unsigned long myChannelNumber = 1661169;
+const char * myWriteAPIKey = "X2MCKXKZEOKLTQ8I";
+
+// Timer variables
+unsigned long lastTime = 0;
+unsigned long timerDelay = 30000;
+
+// Variable to hold sensor readings
+const int sensorIn = 36; // define the ADC GPIO pin number
+const float NoLoadVoltage = 2.5;// use appropriate no -load - voltage for ACS712
+const int mVperAmp = 66; // use appropriate mV/A Hint : read Introduction section
+const float adc_res = 3.3/4096; // define ADC resolution Hint : read Introduction section
+const int loadSupplyVoltage = 5; // define supply voltage of the load
+float Voltage = 0;
+float Volts = 0;
+float Amps = 0;
+
+void setup() 
+{
+  Serial.begin(115200);  //Initialize serial 
+  WiFi.mode(WIFI_STA);   
+  ThingSpeak.begin(client);  // Initialize ThingSpeak
+}
+
+void loop() 
+{
+  if ((millis() - lastTime) > timerDelay) 
+  {  
+    // Connect or reconnect to WiFi
+    if(WiFi.status() != WL_CONNECTED)
+    {
+      Serial.print("Attempting to connect");
+      while(WiFi.status() != WL_CONNECTED)
+      {
+        WiFi.begin(ssid, password); 
+        delay(5000);     
+      } 
+      Serial.println("\nConnected.");
+    }
+
+    // Get a new readings
+    int result = analogRead ( sensorIn );
+    Voltage = result * adc_res ;
+    Serial.print (" Voltage : ");
+    Serial.println ( Voltage );
+    Volts = ( Voltage - NoLoadVoltage );
+    Amps = ( Volts * 1000) / mVperAmp ;
+    float Wattage = (5* Amps ) ;
+    Serial.print ( Amps );
+    Serial.println (" Amps ");
+    Serial.print ( Wattage ) ;
+    Serial.println (" Watt ");
+    delay(5000) ;
+    
+    ThingSpeak.setField(1, Voltage);
+    ThingSpeak.setField(2, Amps);
+    ThingSpeak.setField(3, Wattage);
+
+    int x = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
+
+    if(x == 200)
+    {
+      Serial.println("Channel update successful.");
+    }
+    else
+    {
+      Serial.println("Problem updating channel. HTTP error code " + String(x));
+    }
+    lastTime = millis();
+  }
+}

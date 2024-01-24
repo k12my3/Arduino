@@ -1,0 +1,54 @@
+
+#include <WiFi.h>
+#include "ThingSpeak.h"
+
+const char* ssid = "Abysmal"; //Your Network SSID
+
+const char* password = "noitisnt"; //Your Network Password
+
+int button = 15;
+int buttonState=0;
+
+
+WiFiClient client;
+
+unsigned long myChannelNumber = 1661192; //Your Channel Number (Without Brackets)
+
+const char * myWriteAPIKey = "X1WB0YOHCD83S31U"; //Your Write API Key
+
+void setup(){
+pinMode(button, INPUT);
+Serial.begin(115200);
+delay(10);
+// Connect to WiFi network
+WiFi.begin(ssid, password);
+ThingSpeak.begin(client);
+}
+
+
+
+void loop(){
+buttonState=digitalRead(button);
+int t;// put your main code here, to run repeatedly:
+ if (buttonState == 1)
+ {
+ Serial.println("HIGH");
+ t = 1; 
+ delay(200);
+ }
+ if (buttonState==0)
+ {
+ Serial.println("LOW"); 
+ t = 0;
+ delay(200);
+ }
+
+//mal = mal + 2;//Read Analog values and Store in val variable
+
+Serial.println(t); //Print on Serial Monitor
+
+delay(1000);
+
+ThingSpeak.writeField(myChannelNumber, 1, t, myWriteAPIKey); //Update in ThingSpeak
+delay(100);
+}

@@ -1,0 +1,27 @@
+Raspberry pi starting:-
+
+ping raspberrypi.local -4
+ssh pi@ipaddress
+vncserver
+
+
+
+-------------------------------------------------------------------------------------------------------------
+
+
+pip install -r requirements.txt
+
+for expt2 of demo.py
+
+
+-------------------------------------------------------------------------------------------------------------
+
+pip install --upgrade google-cloud-storage
+
+for expt 3 of upload.py
+
+-------------------------------------------------------------------------------------------------------------
+
+Try to follow these commands
+pip uninstall PyQtwebengine
+pip install PyQtwebengine
